@@ -5,7 +5,9 @@ import {
   Button,
   Box,
   Paper,
-  Typography
+  Typography,
+  Snackbar,
+  Alert as MuiAlert
 } from '@mui/material';
 
 const DeviceForm = ({ selectedDevice, onClear, onRefresh }) => {
@@ -13,6 +15,12 @@ const DeviceForm = ({ selectedDevice, onClear, onRefresh }) => {
     adress: '',
     latitude: '',
     longitude: ''
+  });
+  
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success', // 'success' or 'error'
   });
 
   useEffect(() => {
@@ -46,8 +54,8 @@ const DeviceForm = ({ selectedDevice, onClear, onRefresh }) => {
 
     const data = {
       adress: formData.adress,
-      latitude: (formData.latitude),
-      longitude:(formData.longitude)
+      latitude: formData.latitude,
+      longitude: formData.longitude
     };
 
     try {
@@ -57,18 +65,17 @@ const DeviceForm = ({ selectedDevice, onClear, onRefresh }) => {
           data,
           config
         );
-        alert('Device mis à jour avec succès !');
+        setSnackbar({ open: true, message: 'Device mis à jour avec succès !', severity: 'success' });
       } else {
         await axios.post('http://localhost:8080/api/devices', data, config);
-        alert('Device ajouté avec succès !');
+        setSnackbar({ open: true, message: 'Device ajouté avec succès !', severity: 'success' });
       }
 
       setFormData({ adress: '', latitude: '', longitude: '' });
       onClear?.();
-      onRefresh?.(); // ← rechargement des données
+      onRefresh?.();
     } catch (error) {
-      console.error(error);
-      alert('Erreur lors de la soumission du formulaire.');
+      setSnackbar({ open: true, message: 'Erreur lors de la soumission du formulaire.', severity: 'error' });
     }
   };
 
@@ -88,13 +95,12 @@ const DeviceForm = ({ selectedDevice, onClear, onRefresh }) => {
         `http://localhost:8080/api/devices/${selectedDevice.id}`,
         config
       );
-      alert('Device supprimé avec succès');
+      setSnackbar({ open: true, message: 'Device supprimé avec succès', severity: 'success' });
       setFormData({ adress: '', latitude: '', longitude: '' });
       onClear?.();
-      onRefresh?.(); // ← rechargement des données
+      onRefresh?.();
     } catch (error) {
-      console.error(error);
-      alert('Erreur lors de la suppression.');
+      setSnackbar({ open: true, message: 'Erreur lors de la suppression.', severity: 'error' });
     }
   };
 
@@ -149,6 +155,23 @@ const DeviceForm = ({ selectedDevice, onClear, onRefresh }) => {
           )}
         </Box>
       </Box>
+
+      {/* Snackbar pour le message */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          severity={snackbar.severity}
+        >
+          {snackbar.message}
+        </MuiAlert>
+      </Snackbar>
     </Paper>
   );
 };
