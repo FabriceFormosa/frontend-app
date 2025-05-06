@@ -148,7 +148,11 @@ const DeviceForm = ({ selectedDevice, onClear, onRefresh }) => {
               <Button variant="outlined" color="secondary" onClick={onClear}>
                 Annuler
               </Button>
-              <Button variant="outlined" color="error" onClick={handleDelete}>
+              <Button
+                variant="outlined"
+                sx={{ background: "rgb(198, 40, 40)" }}  // Fix syntax error
+                onClick={handleDelete}
+              >
                 Supprimer
               </Button>
             </>

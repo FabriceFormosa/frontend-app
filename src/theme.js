@@ -20,6 +20,7 @@ const theme = createTheme({
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
+          width:240,
           height: 46,
           padding: 0, // supprime les padding inutiles
           boxSizing: 'border-box',
@@ -37,11 +38,13 @@ const theme = createTheme({
         root: {
           backgroundColor: 'rgb(33, 150, 243)', // couleur de fond
           color: 'white', // couleur du texte
+          width: 140,
+          height: 46,
           borderRadius: 12, // radius de 12px
           padding: '8px 24px', // taille du padding
           textTransform: 'none', // désactive la transformation en majuscules
           '&:hover': {
-            backgroundColor: 'rgb(33, 150, 243)', // couleur de fond au survol
+            backgroundColor: 'rgb(16, 17, 19)', // couleur de fond au survol
             opacity: 0.8, // opacité lors du survol
           },
         },
