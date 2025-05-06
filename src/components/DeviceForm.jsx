@@ -10,13 +10,23 @@ import {
   Alert as MuiAlert
 } from '@mui/material';
 
+const isLongitudeValid = (value) => {
+  const num = parseFloat(value);
+  return !isNaN(num) && num >= -180 && num <= 180;
+};
+
+const isLatitudeValid = (value) => {
+  const num = parseFloat(value);
+  return !isNaN(num) && num >= -90 && num <= 90;
+};
+
 const DeviceForm = ({ selectedDevice, onClear, onRefresh }) => {
   const [formData, setFormData] = useState({
     adress: '',
     latitude: '',
     longitude: ''
   });
-  
+
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
@@ -45,6 +55,17 @@ const DeviceForm = ({ selectedDevice, onClear, onRefresh }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Vérification du format de latitude et longitude
+    if (!isLatitudeValid(formData.latitude) || !isLongitudeValid(formData.longitude)) {
+      setSnackbar({
+        open: true,
+        message: 'Coordonnées invalides. Vérifiez la latitude et la longitude.',
+        severity: 'error'
+      });
+      return;
+    }
+
     const token = localStorage.getItem('token');
     const config = {
       headers: {
@@ -128,6 +149,12 @@ const DeviceForm = ({ selectedDevice, onClear, onRefresh }) => {
           fullWidth
           required
           margin="normal"
+          error={!isLatitudeValid(formData.latitude)}
+          helperText={
+            !isLatitudeValid(formData.latitude)
+              ? 'La latitude doit être comprise entre -90 et 90'
+              : ''
+          }
         />
         <TextField
           label="Longitude"
@@ -138,6 +165,12 @@ const DeviceForm = ({ selectedDevice, onClear, onRefresh }) => {
           fullWidth
           required
           margin="normal"
+          error={!isLongitudeValid(formData.longitude)}
+          helperText={
+            !isLongitudeValid(formData.longitude)
+              ? 'La longitude doit être entre -180 et 180'
+              : ''
+          }
         />
         <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
           <Button variant="contained" color="primary" type="submit">
