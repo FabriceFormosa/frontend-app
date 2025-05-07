@@ -10,6 +10,13 @@ import {
   Alert as MuiAlert
 } from '@mui/material';
 
+
+
+const isMacAddressValid = (value) => {
+  const macAddressPattern = /^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$/;
+  return macAddressPattern.test(value);
+};
+
 const isLongitudeValid = (value) => {
   const num = parseFloat(value);
   return !isNaN(num) && num >= -180 && num <= 180;
@@ -64,6 +71,15 @@ const DeviceForm = ({ selectedDevice, onClear, onRefresh }) => {
         severity: 'error'
       });
       return;
+    }
+
+    if (!isMacAddressValid(formData.adress)) {
+      setSnackbar({
+        open: true,
+        message: 'Adresse MAC invalide. Exemple : 00:37:6C:E2:EB:62',
+        severity: 'error'
+      });
+      return; // <-- Ajout de cette parenthèse fermante
     }
 
     const token = localStorage.getItem('token');
@@ -126,19 +142,28 @@ const DeviceForm = ({ selectedDevice, onClear, onRefresh }) => {
   };
 
   return (
-    <Paper sx={{ p: 3, mb: 4 }}>
-      <Typography variant="h6" gutterBottom>
+    <Paper sx={{ p: 3, mb: 4, height: '100%', display: 'flex', flexDirection: 'column' }}>
+ 
+
+      <Typography variant="h6" gutterBottom sx={{ textAlign: 'center' }}>
         {selectedDevice ? 'Modifier un Device' : 'Ajouter un Device'}
       </Typography>
-      <Box component="form" onSubmit={handleSubmit}>
+
+      <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <TextField
-          label="Adress"
+          label="Adresse"
           name="adress"
           value={formData.adress}
           onChange={handleChange}
           fullWidth
           required
           margin="normal"
+          error={!isMacAddressValid(formData.adress)}
+  helperText={
+    !isMacAddressValid(formData.adress)
+      ? 'Adresse MAC invalide. Exemple : 00:37:6C:E2:EB:62'
+      : ''
+  }
         />
         <TextField
           label="Latitude"
@@ -172,18 +197,20 @@ const DeviceForm = ({ selectedDevice, onClear, onRefresh }) => {
               : ''
           }
         />
-        <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
+
+        {/* Alignement des boutons à droite */}
+        <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
           <Button variant="contained" color="primary" type="submit">
             {selectedDevice ? 'Mettre à jour' : 'Ajouter'}
           </Button>
           {selectedDevice && (
             <>
-              <Button variant="outlined" color="secondary" onClick={onClear}>
+              <Button variant="outlined" color="secondary" onClick={onClear} sx={{ ml: 2 }}>
                 Annuler
               </Button>
               <Button
                 variant="outlined"
-                sx={{ background: "rgb(198, 40, 40)" }}  // Fix syntax error
+                sx={{ background: "rgb(198, 40, 40)", ml: 2 }}
                 onClick={handleDelete}
               >
                 Supprimer

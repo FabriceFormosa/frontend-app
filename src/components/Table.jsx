@@ -13,9 +13,9 @@ export default function Table({ onRowSelect }) {
   const [error, setError] = useState('');
 
   const columns = [
-    { field: 'adress', headerName: 'Mac Address', width: 180 },
-    { field: 'latitude', headerName: 'Latitude', width: 150 },
-    { field: 'longitude', headerName: 'Longitude', width: 150 },
+    { field: 'adress', headerName: 'Mac Address', flex: 1 },
+    { field: 'latitude', headerName: 'Latitude', flex: 1 },
+    { field: 'longitude', headerName: 'Longitude', flex: 1 },
   ];
 
   const fetchDevices = async (query = '') => {
@@ -60,9 +60,9 @@ export default function Table({ onRowSelect }) {
   }, []);
 
   return (
-    <Paper sx={{ height: 600, width: '50%', p: 2 }}>
+    <Paper sx={{ height: '100%', width: '100%', p: 2, display: 'flex', flexDirection: 'column' }}>
       <TextField
-        label="Recherche MAC Adress"
+        label="Recherche MAC Address"
         variant="outlined"
         fullWidth
         value={search}
