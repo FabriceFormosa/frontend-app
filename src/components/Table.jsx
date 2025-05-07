@@ -61,9 +61,9 @@ export default function Table({ onRowSelect }) {
   }, []);
 
   return (
-    <Paper sx={{ height: '100%', width: '100%', p: 2, display: 'flex', flexDirection: 'column' }}>
+    <Paper sx={{ height: '100%', width: '100%', p: 2, display: 'flex', flexDirection: 'column',border: '2px solid  #90caf9' }}>
       <TextField
-        label="Recherche MAC Address"
+        label="Recherche Mac Address"
         variant="outlined"
         fullWidth
         value={search}

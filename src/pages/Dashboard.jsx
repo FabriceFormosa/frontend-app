@@ -23,15 +23,17 @@ export default function Dashboard() {
   return (
     <Container
   sx={{
-    mt: 8,
+    mt: 2,
+    mb: 4,
+    
     backgroundColor: '#e3f2fd',
     border: '2px solid  #90caf9',
     padding: 2
   }}
 >
       {/* Première ligne : email + logout alignés horizontalement */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0 }}>
+             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0 }}>
                 {/* Logo en haut à gauche */}
                 <img
                   src="https://prd1-ticatag-rootorganizations-assets.s3.amazonaws.com/Logos/1735210042829-CfgKAPA"
@@ -39,52 +41,61 @@ export default function Dashboard() {
                   style={{ width: '224px', height: '53px' }}
                 />
               </Box>
-        <Typography variant="h6">
-          {user?.email || 'Utilisateur inconnu'}
-        </Typography>
-        <Button variant="contained" color="secondary" onClick={handleLogout}>
-          Logout
-        </Button>
+              <Box 
+  sx={{ 
+    
+    display: 'flex', 
+    justifyContent: 'space-between', 
+    alignItems: 'center', 
+    mb: 0,
+    px: 0 
+  }}
+>
+  <Box>
+  <Button 
+      variant="contained" 
+       
+      onClick={handleLogout} 
+      sx={{ mt: 0 }} // marge au-dessus du bouton
+    >
+      Logout
+    </Button>
+    <Typography variant="h6">
+      {user?.email || 'Utilisateur inconnu'}
+    </Typography>
+
+  </Box>
+</Box>
+
+   
       </Box>
 
       {/* Deuxième ligne : formulaire + tableau */}
       <Box
-        sx={{
-          display: 'flex',
-          flexDirection: { xs: 'column', md: 'row' },
-          
-          gap: 2,
-        }}
-      >
-  {/* Formulaire : 1/3 */}
-<Box
   sx={{
-    width: { xs: '100%', md: '40%' },
-    flex: { xs: 'none', md: '0 0 40%' }, // facultatif, renforce le comportement
-    
+    display: 'flex',
+    flexDirection: { xs: 'column', md: 'row' },
+    gap: 2,
   }}
 >
-  <DeviceForm
-    selectedDevice={selectedDevice}
-    onClear={() => setSelectedDevice(null)}
-    onRefresh={handleRefresh}
-  />
+  {/* Formulaire : prend 1/3 de l'espace */}
+  <Box sx={{ flex: 1 }}>
+    <DeviceForm
+      selectedDevice={selectedDevice}
+      onClear={() => setSelectedDevice(null)}
+      onRefresh={handleRefresh}
+    />
+  </Box>
+
+  {/* Table : prend 2/3 de l'espace */}
+  <Box sx={{ flex: 1 }}>
+    <Table 
+      key={refreshFlag}
+      onRowSelect={setSelectedDevice}
+    />
+  </Box>
 </Box>
 
-   {/* Table : 2/3 */}
-<Box
-  sx={{
-    width: { xs: '100%', md: '60%' },
-    flex: { xs: 'none', md: '0 0 60%' },
-    
-  }}
->
-  <Table 
-    key={refreshFlag}
-    onRowSelect={setSelectedDevice}
-  />
-</Box>
-      </Box>
     </Container>
   );
 }

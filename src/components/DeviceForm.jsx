@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Tooltip } from '@mui/material';
 import {
   TextField,
   Button,
@@ -150,7 +151,8 @@ const DeviceForm = ({ selectedDevice, onClear, onRefresh }) => {
   };
 
   return (
-    <Paper sx={{ p: 3, mb: 4, height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <Paper sx={{ p: 3, mb: 4, height: '100%', display: 'flex', flexDirection: 'column' , 
+      border: '2px solid  #90caf9'}}>
  
 
       <Typography variant="h6" gutterBottom sx={{ textAlign: 'center' }}>
@@ -159,7 +161,7 @@ const DeviceForm = ({ selectedDevice, onClear, onRefresh }) => {
 
       <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <TextField
-          label="Adresse"
+          label="Mac Address"
           name="adress"
           value={formData.adress}
           onChange={handleChange}
@@ -206,15 +208,30 @@ const DeviceForm = ({ selectedDevice, onClear, onRefresh }) => {
           }
         />
 
-<TextField
-          label="Adresse Postale"
-          name="addresspostale"
-          value={formData.addresspostale}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
+<Tooltip
+  title={formData.addresspostale}
+  placement="top"
+  componentsProps={{
+    tooltip: {
+      sx: {
+        fontSize: '16px', // 👈 taille de la police dans le tooltip
+        maxWidth: 300,     // (optionnel) limite la largeur du tooltip
+      }
+    }
+  }}
+>
+  <TextField
+    label="Adresse Postale"
+    name="addresspostale"
+    value={formData.addresspostale}
+    onChange={handleChange}
+    fullWidth
+    margin="normal"
+    
+    
+  />
+</Tooltip>
 
-        />
         
         {/* Alignement des boutons à droite */}
         <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
