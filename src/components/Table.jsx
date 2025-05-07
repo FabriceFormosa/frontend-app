@@ -16,6 +16,7 @@ export default function Table({ onRowSelect }) {
     { field: 'adress', headerName: 'Mac Address', flex: 1 },
     { field: 'latitude', headerName: 'Latitude', flex: 1 },
     { field: 'longitude', headerName: 'Longitude', flex: 1 },
+    { field: 'addresspostale', headerName: 'Adress', flex: 1 },
   ];
 
   const fetchDevices = async (query = '') => {
