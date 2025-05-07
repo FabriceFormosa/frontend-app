@@ -13,7 +13,7 @@ import {
 
 
 const isMacAddressValid = (value) => {
-  const macAddressPattern = /^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$/;
+  const macAddressPattern = /^([0-9A-Fa-f]{12}|([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2})$/;
   return macAddressPattern.test(value);
 };
 
@@ -31,7 +31,8 @@ const DeviceForm = ({ selectedDevice, onClear, onRefresh }) => {
   const [formData, setFormData] = useState({
     adress: '',
     latitude: '',
-    longitude: ''
+    longitude: '',
+    addresspostale:''
   });
 
   const [snackbar, setSnackbar] = useState({
@@ -45,10 +46,11 @@ const DeviceForm = ({ selectedDevice, onClear, onRefresh }) => {
       setFormData({
         adress: selectedDevice.adress || '',
         latitude: selectedDevice.latitude || '',
-        longitude: selectedDevice.longitude || ''
+        longitude: selectedDevice.longitude || '',
+        addresspostale: selectedDevice.addresspostale || ''
       });
     } else {
-      setFormData({ adress: '', latitude: '', longitude: '' });
+      setFormData({ adress: '', latitude: '', longitude: '', addresspostale: ''  });
     }
   }, [selectedDevice]);
 
@@ -76,11 +78,15 @@ const DeviceForm = ({ selectedDevice, onClear, onRefresh }) => {
     if (!isMacAddressValid(formData.adress)) {
       setSnackbar({
         open: true,
-        message: 'Adresse MAC invalide. Exemple : 00:37:6C:E2:EB:62',
+        message: 'Format : 00:37:6C:E2:EB:62 ou 00376CE2EB62',
         severity: 'error'
       });
-      return; // <-- Ajout de cette parenthèse fermante
+      return; 
     }
+
+    const formatMacToCompact = (mac) => {
+      return mac.replace(/[^a-fA-F0-9]/g, '').toUpperCase();
+    };
 
     const token = localStorage.getItem('token');
     const config = {
@@ -90,9 +96,10 @@ const DeviceForm = ({ selectedDevice, onClear, onRefresh }) => {
     };
 
     const data = {
-      adress: formData.adress,
+      adress: formatMacToCompact(formData.adress),
       latitude: formData.latitude,
-      longitude: formData.longitude
+      longitude: formData.longitude,
+      addresspostale:formData.addresspostale,
     };
 
     try {
@@ -108,11 +115,12 @@ const DeviceForm = ({ selectedDevice, onClear, onRefresh }) => {
         setSnackbar({ open: true, message: 'Device ajouté avec succès !', severity: 'success' });
       }
 
-      setFormData({ adress: '', latitude: '', longitude: '' });
+      setFormData({ adress: '', latitude: '', longitude: '',addresspostale:'' });
       onClear?.();
       onRefresh?.();
     } catch (error) {
-      setSnackbar({ open: true, message: 'Erreur lors de la soumission du formulaire.', severity: 'error' });
+      
+      setSnackbar({ open: true, message: error.response.data.error, severity: 'error' });
     }
   };
 
@@ -133,7 +141,7 @@ const DeviceForm = ({ selectedDevice, onClear, onRefresh }) => {
         config
       );
       setSnackbar({ open: true, message: 'Device supprimé avec succès', severity: 'success' });
-      setFormData({ adress: '', latitude: '', longitude: '' });
+      setFormData({ adress: '', latitude: '', longitude: '',addresspostale: ''});
       onClear?.();
       onRefresh?.();
     } catch (error) {
@@ -161,7 +169,7 @@ const DeviceForm = ({ selectedDevice, onClear, onRefresh }) => {
           error={!isMacAddressValid(formData.adress)}
   helperText={
     !isMacAddressValid(formData.adress)
-      ? 'Adresse MAC invalide. Exemple : 00:37:6C:E2:EB:62'
+      ? 'Format : 00:37:6C:E2:EB:62 ou 00376CE2EB62'
       : ''
   }
         />
@@ -198,6 +206,16 @@ const DeviceForm = ({ selectedDevice, onClear, onRefresh }) => {
           }
         />
 
+<TextField
+          label="Adresse Postale"
+          name="addresspostale"
+          value={formData.addresspostale}
+          onChange={handleChange}
+          fullWidth
+          margin="normal"
+
+        />
+        
         {/* Alignement des boutons à droite */}
         <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
           <Button variant="contained" color="primary" type="submit">
